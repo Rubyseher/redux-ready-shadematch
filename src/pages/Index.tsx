@@ -249,13 +249,13 @@ export default function Index() {
           {/* Bottom bar */}
           <div className="mt-8 flex flex-col items-center gap-3 border-t border-border/50 pt-6 sm:flex-row sm:justify-between">
             <p className="text-xs text-muted-foreground">
-              © {new Date().getFullYear()} ShadeMatch. All rights reserved.
+              © {new Date().getFullYear()} {APP_NAME}. All rights reserved.
             </p>
             <div className="flex items-center gap-4">
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground transition-colors hover:text-foreground">
+              <a href={APP_GITHUB} target="_blank" rel="noopener noreferrer" className="text-muted-foreground transition-colors hover:text-foreground">
                 <Github className="h-4 w-4" />
               </a>
-              <a href="mailto:hello@shadematch.app" className="text-muted-foreground transition-colors hover:text-foreground">
+              <a href={`mailto:${APP_EMAIL}`} className="text-muted-foreground transition-colors hover:text-foreground">
                 <Mail className="h-4 w-4" />
               </a>
               <a href="#" className="text-muted-foreground transition-colors hover:text-foreground">
