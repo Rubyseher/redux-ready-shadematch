@@ -197,13 +197,73 @@ export default function Index() {
           </section>
         )}
 
-        {/* Footer */}
-        <footer className="pb-8 pt-4 text-center text-xs text-muted-foreground sm:text-sm">
-          {isGeminiConfigured()
-            ? "Powered by Google Gemini AI • Drop an image to get smart outfit suggestions"
-            : "Drop an image of your clothing to get personalized color match suggestions"
-          }
-        </footer>
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t border-border/50 bg-card/60 backdrop-blur-lg">
+        <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
+          <div className="grid gap-8 sm:grid-cols-3">
+            {/* Brand */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <div className="rounded-lg bg-primary/10 p-1.5">
+                  <Sparkles className="h-4 w-4 text-primary" />
+                </div>
+                <span className="text-sm font-bold text-foreground">ShadeMatch</span>
+              </div>
+              <p className="text-xs leading-relaxed text-muted-foreground">
+                AI-powered outfit color matching. Upload your clothing and get instant styling suggestions.
+              </p>
+            </div>
+
+            {/* Links */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-foreground">Resources</h4>
+              <ul className="space-y-2 text-xs text-muted-foreground">
+                <li>
+                  <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground">
+                    <Github className="h-3.5 w-3.5" /> GitHub Repository
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="transition-colors hover:text-foreground">How It Works</a>
+                </li>
+                <li>
+                  <a href="#" className="transition-colors hover:text-foreground">Privacy Policy</a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Built with */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-foreground">Built With</h4>
+              <ul className="space-y-2 text-xs text-muted-foreground">
+                <li>React + TypeScript</li>
+                <li>Google Gemini AI</li>
+                <li>Tailwind CSS</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom bar */}
+          <div className="mt-8 flex flex-col items-center gap-3 border-t border-border/50 pt-6 sm:flex-row sm:justify-between">
+            <p className="text-xs text-muted-foreground">
+              © {new Date().getFullYear()} ShadeMatch. All rights reserved.
+            </p>
+            <div className="flex items-center gap-4">
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground transition-colors hover:text-foreground">
+                <Github className="h-4 w-4" />
+              </a>
+              <a href="mailto:hello@shadematch.app" className="text-muted-foreground transition-colors hover:text-foreground">
+                <Mail className="h-4 w-4" />
+              </a>
+              <a href="#" className="text-muted-foreground transition-colors hover:text-foreground">
+                <Heart className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
       </main>
     </div>
   );
