@@ -32,34 +32,60 @@ Return ONLY a valid JSON array with no extra text. Example format:
 Consider current fashion trends, color theory, and seasonal versatility. Mix different item types (bottoms, shoes, accessories).`;
 
   try {
+    console.log("🤖 Calling Gemini API...");
     const model = ai.getGenerativeModel({ 
       model: "gemini-2.0-flash",
-      generationConfig: { maxOutputTokens: 2048, temperature: 0.7 },
+      generationConfig: { maxOutputTokens: 4096, temperature: 0.7 },
     });
     const result = await model.generateContent(prompt);
     const finishReason = result.response.candidates?.[0]?.finishReason;
+    console.log("🤖 Gemini finish reason:", finishReason);
+    
     if (finishReason === "MAX_TOKENS") {
-      console.warn("Gemini output truncated");
+      console.warn("🤖 Gemini output truncated");
       return null;
     }
     const text = result.response.text().trim();
+    console.log("🤖 Gemini raw response:", text.slice(0, 200));
     
     // Extract JSON from response (handle markdown code blocks)
-    const jsonMatch = text.match(/\[[\s\S]*\]/);
-    if (!jsonMatch) return null;
+    let cleaned = text
+      .replace(/```json\s*/gi, "")
+      .replace(/```\s*/g, "")
+      .trim();
+    
+    const jsonMatch = cleaned.match(/\[[\s\S]*\]/);
+    if (!jsonMatch) {
+      console.error("🤖 No JSON array found in response");
+      return null;
+    }
 
-    const parsed = JSON.parse(jsonMatch[0]) as ColorSuggestion[];
+    // Clean common JSON issues
+    let jsonStr = jsonMatch[0]
+      .replace(/,\s*]/g, "]")  // trailing commas
+      .replace(/,\s*}/g, "}")
+      .replace(/[\x00-\x1F\x7F]/g, ""); // control characters
+
+    const parsed = JSON.parse(jsonStr) as ColorSuggestion[];
+    console.log("🤖 Parsed suggestions:", parsed.length);
     
     // Validate structure
-    if (!Array.isArray(parsed) || parsed.length === 0) return null;
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      console.error("🤖 Invalid parsed structure");
+      return null;
+    }
     const valid = parsed.every(
       (s) => s.itemType && s.colorName && s.colorHex?.startsWith("#")
     );
-    if (!valid) return null;
+    if (!valid) {
+      console.error("🤖 Suggestions failed validation");
+      return null;
+    }
 
+    console.log("✅ AI suggestions ready!");
     return parsed.slice(0, 6);
   } catch (err) {
-    console.error("Gemini API error:", err);
+    console.error("🤖 Gemini API error:", err);
     return null; // fallback to rule-based
   }
 }
