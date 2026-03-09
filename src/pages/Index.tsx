@@ -210,10 +210,10 @@ export default function Index() {
                 <div className="rounded-lg bg-primary/10 p-1.5">
                   <Sparkles className="h-4 w-4 text-primary" />
                 </div>
-                <span className="text-sm font-bold text-foreground">ShadeMatch</span>
+                <span className="text-sm font-bold text-foreground">{APP_NAME}</span>
               </div>
               <p className="text-xs leading-relaxed text-muted-foreground">
-                AI-powered outfit color matching. Upload your clothing and get instant styling suggestions.
+                {APP_DESCRIPTION}
               </p>
             </div>
 
