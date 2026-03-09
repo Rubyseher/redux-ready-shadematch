@@ -55,32 +55,32 @@ export default function ImageDropZone({ onImageLoad }: ImageDropZoneProps) {
           ? "border-primary bg-primary/5 scale-[1.02]"
           : "border-border hover:border-primary/50 hover:bg-muted/50"
         }
-        ${preview ? "p-4" : "p-12"}
+        ${preview ? "p-3 sm:p-4" : "p-8 sm:p-12"}
       `}
     >
       {preview ? (
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center gap-3 sm:gap-4">
           <img
             src={preview}
             alt="Uploaded clothing"
-            className="max-h-72 rounded-xl object-contain shadow-md"
+            className="max-h-56 rounded-xl object-contain shadow-md sm:max-h-72"
           />
-          <p className="text-sm text-muted-foreground">Click or drop another image to replace</p>
+          <p className="text-xs text-muted-foreground sm:text-sm">Click or drop another image to replace</p>
         </div>
       ) : (
-        <div className="flex flex-col items-center gap-4 text-muted-foreground">
-          <div className="rounded-2xl bg-primary/10 p-5">
-            <Upload className="h-10 w-10 text-primary" />
+        <div className="flex flex-col items-center gap-3 text-muted-foreground sm:gap-4">
+          <div className="rounded-xl bg-primary/10 p-4 sm:rounded-2xl sm:p-5">
+            <Upload className="h-8 w-8 text-primary sm:h-10 sm:w-10" />
           </div>
           <div className="text-center">
-            <p className="text-lg font-semibold text-foreground">
+            <p className="text-base font-semibold text-foreground sm:text-lg">
               Drop your clothing image here
             </p>
-            <p className="mt-1 text-sm">or click to browse · PNG, JPG, WEBP</p>
+            <p className="mt-1 text-xs sm:text-sm">or click to browse · PNG, JPG, WEBP</p>
           </div>
-          <div className="mt-2 flex items-center gap-2 rounded-lg bg-muted px-4 py-2 text-xs">
-            <ImageIcon className="h-4 w-4" />
-            <span>Shirt, T-shirt, Pants, Jacket, Dress, Kurta…</span>
+          <div className="mt-1 flex items-center gap-2 rounded-lg bg-muted px-3 py-1.5 text-xs sm:mt-2 sm:px-4 sm:py-2">
+            <ImageIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <span>Shirt, T-shirt, Pants, Jacket, Dress…</span>
           </div>
         </div>
       )}
