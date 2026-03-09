@@ -19,7 +19,10 @@ export default function UserMenu() {
 
   if (!user) {
     return (
-      <Button variant="outline" size="sm" onClick={() => navigate("/auth")} className="gap-2">
+      <Button
+        onClick={() => navigate("/auth")}
+        className="gap-2 rounded-full bg-gradient-to-r from-primary to-primary/80 px-5 py-2 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all duration-200 hover:shadow-xl hover:shadow-primary/30 hover:brightness-110"
+      >
         <LogIn className="h-4 w-4" />
         Sign In
       </Button>
