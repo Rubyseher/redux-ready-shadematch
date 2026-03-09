@@ -4,6 +4,8 @@ import GenderSelector from "@/components/GenderSelector";
 import DetectionResult from "@/components/DetectionResult";
 import ColorSuggestionCard from "@/components/ColorSuggestionCard";
 import ShoppingLinks from "@/components/ShoppingLinks";
+import UserMenu from "@/components/UserMenu";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   extractDominantColor,
   detectClothType,
@@ -11,7 +13,8 @@ import {
   type ClothType,
   type ColorSuggestion,
 } from "@/lib/colorAnalysis";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Lock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Index() {
   const [gender, setGender] = useState<"men" | "women">("men");
