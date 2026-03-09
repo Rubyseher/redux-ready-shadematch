@@ -118,6 +118,25 @@ export default function Index() {
           </section>
         )}
 
+        {/* Save Prompt for non-authenticated users */}
+        {selectedSuggestion && !user && (
+          <section className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
+              <Lock className="h-5 w-5 text-primary" />
+              <div className="flex-1">
+                <p className="text-sm font-medium text-foreground">Save this outfit combo?</p>
+                <p className="text-xs text-muted-foreground">Create a free account to save and revisit your matches</p>
+              </div>
+              <button
+                onClick={() => navigate("/auth")}
+                className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+              >
+                Sign Up Free
+              </button>
+            </div>
+          </section>
+        )}
+
         {/* Footer */}
         <footer className="pb-8 pt-4 text-center text-sm text-muted-foreground">
           Drop an image of your clothing to get personalized color match suggestions
