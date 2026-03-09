@@ -6,6 +6,8 @@ import ColorSuggestionCard from "@/components/ColorSuggestionCard";
 import ShoppingLinks from "@/components/ShoppingLinks";
 import UserMenu from "@/components/UserMenu";
 import ThemeToggle from "@/components/ThemeToggle";
+import OutfitHistory from "@/components/OutfitHistory";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   extractDominantColor,
@@ -15,8 +17,9 @@ import {
   type ColorSuggestion,
 } from "@/lib/colorAnalysis";
 import { getAIColorSuggestions, isGeminiConfigured } from "@/lib/geminiService";
+import { saveOutfit } from "@/lib/firebase";
 import { APP_NAME, APP_TAGLINE, APP_DESCRIPTION, APP_EMAIL, APP_GITHUB } from "@/lib/config";
-import { Sparkles, Lock, Brain, Cpu, Github, Mail, Heart } from "lucide-react";
+import { Sparkles, Lock, Brain, Cpu, Github, Mail, Heart, BookmarkCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -30,26 +33,20 @@ export default function Index() {
   const [selectedSuggestion, setSelectedSuggestion] = useState<ColorSuggestion | null>(null);
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [usedAi, setUsedAi] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const fetchAISuggestions = useCallback(
     async (type: ClothType, colorName: string, g: "men" | "women") => {
-      if (!isGeminiConfigured()) {
-        return getColorCombinations(type, colorName, g);
-      }
-
+      if (!isGeminiConfigured()) return getColorCombinations(type, colorName, g);
       setIsAiLoading(true);
       try {
         const aiSuggestions = await getAIColorSuggestions(type, colorName, g);
-        if (aiSuggestions) {
-          setUsedAi(true);
-          return aiSuggestions;
-        }
+        if (aiSuggestions) { setUsedAi(true); return aiSuggestions; }
       } catch {
         console.error("AI suggestion failed, using fallback");
       } finally {
         setIsAiLoading(false);
       }
-
       setUsedAi(false);
       return getColorCombinations(type, colorName, g);
     },
@@ -63,13 +60,9 @@ export default function Index() {
       setClothType(type);
       setDetectedColor({ name: color.name, hex: color.hex });
       setSelectedSuggestion(null);
-
       const combos = await fetchAISuggestions(type, color.name, gender);
       setSuggestions(combos);
-
-      if (isGeminiConfigured()) {
-        toast.success("AI-powered suggestions ready!", { duration: 2000 });
-      }
+      if (isGeminiConfigured()) toast.success("AI-powered suggestions ready!", { duration: 2000 });
     },
     [gender, fetchAISuggestions]
   );
@@ -86,12 +79,32 @@ export default function Index() {
     [clothType, detectedColor, fetchAISuggestions]
   );
 
+  const handleSaveOutfit = useCallback(async () => {
+    if (!user || !clothType || !detectedColor || suggestions.length === 0) return;
+    setIsSaving(true);
+    try {
+      await saveOutfit({
+        userId: user.uid,
+        clothType,
+        detectedColor: detectedColor.name,
+        detectedColorHex: detectedColor.hex,
+        gender,
+        suggestions,
+        usedAi,
+      });
+      toast.success("Outfit saved to your history! 🎉");
+    } catch {
+      toast.error("Failed to save outfit. Is Firebase configured?");
+    } finally {
+      setIsSaving(false);
+    }
+  }, [user, clothType, detectedColor, suggestions, gender, usedAi]);
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="sticky top-0 z-50 border-b border-border/50 bg-card/80 backdrop-blur-lg">
         <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3 sm:px-6 sm:py-4">
-          {/* Logo */}
           <div className="flex items-center gap-2 sm:gap-3">
             <div className="rounded-lg bg-primary/10 p-1.5 sm:rounded-xl sm:p-2">
               <Sparkles className="h-5 w-5 text-primary sm:h-6 sm:w-6" />
@@ -101,8 +114,6 @@ export default function Index() {
               <p className="hidden text-xs text-muted-foreground sm:block">{APP_TAGLINE}</p>
             </div>
           </div>
-
-          {/* Controls */}
           <div className="flex items-center gap-2 sm:gap-3">
             <GenderSelector value={gender} onChange={handleGenderChange} />
             <ThemeToggle />
@@ -113,23 +124,28 @@ export default function Index() {
 
       {/* Main Content */}
       <main className="mx-auto max-w-4xl space-y-6 px-4 py-6 sm:space-y-8 sm:px-6 sm:py-10">
-        {/* Upload Section */}
+
+        {/* Upload / Camera */}
         <section>
-          <ImageDropZone onImageLoad={handleImageLoad} />
+          <ErrorBoundary fallbackTitle="Image upload failed">
+            <ImageDropZone onImageLoad={handleImageLoad} />
+          </ErrorBoundary>
         </section>
 
         {/* Detection Result */}
         {clothType && detectedColor && (
           <section className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <DetectionResult
-              clothType={clothType}
-              colorName={detectedColor.name}
-              colorHex={detectedColor.hex}
-            />
+            <ErrorBoundary fallbackTitle="Detection display failed">
+              <DetectionResult
+                clothType={clothType}
+                colorName={detectedColor.name}
+                colorHex={detectedColor.hex}
+              />
+            </ErrorBoundary>
           </section>
         )}
 
-        {/* AI Loading State */}
+        {/* AI Loading */}
         {isAiLoading && (
           <section className="animate-in fade-in duration-300">
             <div className="flex items-center justify-center gap-3 rounded-xl border border-primary/20 bg-primary/5 p-6">
@@ -142,44 +158,63 @@ export default function Index() {
         {/* Color Suggestions */}
         {suggestions.length > 0 && !isAiLoading && (
           <section className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
-            <div className="mb-4 flex flex-wrap items-center gap-2">
-              <h2 className="font-sans text-base font-bold text-foreground sm:text-lg">
-                ✨ Suggested Color Combinations
-              </h2>
-              {usedAi ? (
-                <span className="flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
-                  <Brain className="h-3 w-3" /> AI Powered
-                </span>
-              ) : (
-                <span className="flex items-center gap-1 rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
-                  <Cpu className="h-3 w-3" /> Rule-Based
-                </span>
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="font-sans text-base font-bold text-foreground sm:text-lg">
+                  ✨ Suggested Color Combinations
+                </h2>
+                {usedAi ? (
+                  <span className="flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                    <Brain className="h-3 w-3" /> AI Powered
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1 rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+                    <Cpu className="h-3 w-3" /> Rule-Based
+                  </span>
+                )}
+              </div>
+
+              {/* Save button for authenticated users */}
+              {user && (
+                <button
+                  onClick={handleSaveOutfit}
+                  disabled={isSaving}
+                  className="flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/10 disabled:opacity-50"
+                >
+                  <BookmarkCheck className="h-3.5 w-3.5" />
+                  {isSaving ? "Saving…" : "Save Outfit"}
+                </button>
               )}
             </div>
-            <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              {suggestions.map((s, i) => (
-                <ColorSuggestionCard
-                  key={`${s.colorName}-${s.itemType}-${i}`}
-                  suggestion={s}
-                  onClick={setSelectedSuggestion}
-                  isSelected={
-                    selectedSuggestion?.colorName === s.colorName &&
-                    selectedSuggestion?.itemType === s.itemType
-                  }
-                />
-              ))}
-            </div>
+
+            <ErrorBoundary fallbackTitle="Could not render suggestions">
+              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                {suggestions.map((s, i) => (
+                  <ColorSuggestionCard
+                    key={`${s.colorName}-${s.itemType}-${i}`}
+                    suggestion={s}
+                    onClick={setSelectedSuggestion}
+                    isSelected={
+                      selectedSuggestion?.colorName === s.colorName &&
+                      selectedSuggestion?.itemType === s.itemType
+                    }
+                  />
+                ))}
+              </div>
+            </ErrorBoundary>
           </section>
         )}
 
         {/* Shopping Links */}
         {selectedSuggestion && (
           <section className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <ShoppingLinks suggestion={selectedSuggestion} gender={gender} />
+            <ErrorBoundary fallbackTitle="Shopping links failed to load">
+              <ShoppingLinks suggestion={selectedSuggestion} gender={gender} />
+            </ErrorBoundary>
           </section>
         )}
 
-        {/* Save Prompt for non-authenticated users */}
+        {/* Sign Up prompt for guests */}
         {selectedSuggestion && !user && (
           <section className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex flex-col gap-3 rounded-xl border border-primary/20 bg-primary/5 p-4 sm:flex-row sm:items-center">
@@ -198,13 +233,17 @@ export default function Index() {
           </section>
         )}
 
+        {/* Outfit History (logged-in users only, real-time from Firestore) */}
+        <ErrorBoundary fallbackTitle="Outfit history failed to load">
+          <OutfitHistory />
+        </ErrorBoundary>
+
       </main>
 
       {/* Footer */}
       <footer className="border-t border-border/50 bg-card/60 backdrop-blur-lg">
         <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
           <div className="grid gap-8 sm:grid-cols-3">
-            {/* Brand */}
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <div className="rounded-lg bg-primary/10 p-1.5">
@@ -212,12 +251,8 @@ export default function Index() {
                 </div>
                 <span className="text-sm font-bold text-foreground">{APP_NAME}</span>
               </div>
-              <p className="text-xs leading-relaxed text-muted-foreground">
-                {APP_DESCRIPTION}
-              </p>
+              <p className="text-xs leading-relaxed text-muted-foreground">{APP_DESCRIPTION}</p>
             </div>
-
-            {/* Links */}
             <div className="space-y-3">
               <h4 className="text-xs font-semibold uppercase tracking-wider text-foreground">Resources</h4>
               <ul className="space-y-2 text-xs text-muted-foreground">
@@ -226,27 +261,19 @@ export default function Index() {
                     <Github className="h-3.5 w-3.5" /> GitHub Repository
                   </a>
                 </li>
-                <li>
-                  <a href="#" className="transition-colors hover:text-foreground">How It Works</a>
-                </li>
-                <li>
-                  <a href="#" className="transition-colors hover:text-foreground">Privacy Policy</a>
-                </li>
+                <li><a href="#" className="transition-colors hover:text-foreground">How It Works</a></li>
+                <li><a href="#" className="transition-colors hover:text-foreground">Privacy Policy</a></li>
               </ul>
             </div>
-
-            {/* Built with */}
             <div className="space-y-3">
               <h4 className="text-xs font-semibold uppercase tracking-wider text-foreground">Built With</h4>
               <ul className="space-y-2 text-xs text-muted-foreground">
                 <li>React + TypeScript</li>
                 <li>Google Gemini AI</li>
-                <li>Tailwind CSS</li>
+                <li>Firebase Firestore</li>
               </ul>
             </div>
           </div>
-
-          {/* Bottom bar */}
           <div className="mt-8 flex flex-col items-center gap-3 border-t border-border/50 pt-6 sm:flex-row sm:justify-between">
             <p className="text-xs text-muted-foreground">
               © {new Date().getFullYear()} {APP_NAME}. All rights reserved.

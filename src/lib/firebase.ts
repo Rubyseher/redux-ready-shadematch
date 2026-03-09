@@ -10,6 +10,19 @@ import {
   type User,
   type Auth,
 } from "firebase/auth";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  query,
+  where,
+  orderBy,
+  onSnapshot,
+  deleteDoc,
+  doc,
+  serverTimestamp,
+  type Firestore,
+} from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -24,10 +37,12 @@ const isConfigured = Boolean(firebaseConfig.apiKey && firebaseConfig.projectId);
 
 let app: FirebaseApp | null = null;
 let auth: Auth | null = null;
+let db: Firestore | null = null;
 
 if (isConfigured) {
   app = initializeApp(firebaseConfig);
   auth = getAuth(app);
+  db = getFirestore(app);
 }
 
 const googleProvider = new GoogleAuthProvider();
@@ -49,4 +64,49 @@ export const logout = () => {
   return signOut(auth);
 };
 
-export { auth, isConfigured, onAuthStateChanged, type User };
+// ─── Firestore: Outfit History ──────────────────────────────────
+export interface OutfitRecord {
+  id?: string;
+  userId: string;
+  clothType: string;
+  detectedColor: string;
+  detectedColorHex: string;
+  gender: string;
+  suggestions: { itemType: string; colorName: string; colorHex: string }[];
+  usedAi: boolean;
+  createdAt: any;
+}
+
+export const saveOutfit = async (data: Omit<OutfitRecord, "id" | "createdAt">) => {
+  if (!db) throw new Error("Firebase not configured");
+  return addDoc(collection(db, "outfits"), {
+    ...data,
+    createdAt: serverTimestamp(),
+  });
+};
+
+export const subscribeToOutfits = (
+  userId: string,
+  callback: (outfits: OutfitRecord[]) => void
+) => {
+  if (!db) return () => {};
+  const q = query(
+    collection(db, "outfits"),
+    where("userId", "==", userId),
+    orderBy("createdAt", "desc")
+  );
+  return onSnapshot(q, (snapshot) => {
+    const outfits = snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as OutfitRecord));
+    callback(outfits);
+  }, (error) => {
+    console.error("Firestore subscription error:", error);
+    callback([]);
+  });
+};
+
+export const deleteOutfit = async (outfitId: string) => {
+  if (!db) throw new Error("Firebase not configured");
+  return deleteDoc(doc(db, "outfits", outfitId));
+};
+
+export { auth, db, isConfigured, onAuthStateChanged, type User };
