@@ -17,6 +17,8 @@ import { Sparkles, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function Index() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [gender, setGender] = useState<"men" | "women">("men");
   const [clothType, setClothType] = useState<ClothType | null>(null);
   const [detectedColor, setDetectedColor] = useState<{ name: string; hex: string } | null>(null);
