@@ -32,8 +32,16 @@ Return ONLY a valid JSON array with no extra text. Example format:
 Consider current fashion trends, color theory, and seasonal versatility. Mix different item types (bottoms, shoes, accessories).`;
 
   try {
-    const model = ai.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = ai.getGenerativeModel({ 
+      model: "gemini-2.0-flash",
+      generationConfig: { maxOutputTokens: 2048, temperature: 0.7 },
+    });
     const result = await model.generateContent(prompt);
+    const finishReason = result.response.candidates?.[0]?.finishReason;
+    if (finishReason === "MAX_TOKENS") {
+      console.warn("Gemini output truncated");
+      return null;
+    }
     const text = result.response.text().trim();
     
     // Extract JSON from response (handle markdown code blocks)

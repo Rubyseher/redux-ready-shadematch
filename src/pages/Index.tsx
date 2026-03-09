@@ -41,7 +41,7 @@ export default function Index() {
       setIsAiLoading(true);
       try {
         const aiSuggestions = await getAIColorSuggestions(type, colorName, g);
-        if (aiSuggestions) { setUsedAi(true); return aiSuggestions; }
+        if (aiSuggestions) { setUsedAi(true); toast.success("AI-powered suggestions ready!", { duration: 2000 }); return aiSuggestions; }
       } catch {
         console.error("AI suggestion failed, using fallback");
       } finally {
@@ -62,7 +62,6 @@ export default function Index() {
       setSelectedSuggestion(null);
       const combos = await fetchAISuggestions(type, color.name, gender);
       setSuggestions(combos);
-      if (isGeminiConfigured()) toast.success("AI-powered suggestions ready!", { duration: 2000 });
     },
     [gender, fetchAISuggestions]
   );
