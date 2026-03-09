@@ -5,6 +5,7 @@ import DetectionResult from "@/components/DetectionResult";
 import ColorSuggestionCard from "@/components/ColorSuggestionCard";
 import ShoppingLinks from "@/components/ShoppingLinks";
 import UserMenu from "@/components/UserMenu";
+import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   extractDominantColor,
@@ -32,7 +33,6 @@ export default function Index() {
   const fetchAISuggestions = useCallback(
     async (type: ClothType, colorName: string, g: "men" | "women") => {
       if (!isGeminiConfigured()) {
-        // Fallback to rule-based
         return getColorCombinations(type, colorName, g);
       }
 
@@ -49,7 +49,6 @@ export default function Index() {
         setIsAiLoading(false);
       }
 
-      // Fallback
       setUsedAi(false);
       return getColorCombinations(type, colorName, g);
     },
@@ -89,26 +88,30 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border/50 bg-card/60 backdrop-blur-lg">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-xl bg-primary/10 p-2">
-              <Sparkles className="h-6 w-6 text-primary" />
+      <header className="sticky top-0 z-50 border-b border-border/50 bg-card/80 backdrop-blur-lg">
+        <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3 sm:px-6 sm:py-4">
+          {/* Logo */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="rounded-lg bg-primary/10 p-1.5 sm:rounded-xl sm:p-2">
+              <Sparkles className="h-5 w-5 text-primary sm:h-6 sm:w-6" />
             </div>
             <div>
-              <h1 className="text-xl font-bold tracking-tight text-foreground">ShadeMatch</h1>
-              <p className="text-xs text-muted-foreground">AI-Powered Outfit Color Matcher</p>
+              <h1 className="text-lg font-bold tracking-tight text-foreground sm:text-xl">ShadeMatch</h1>
+              <p className="hidden text-xs text-muted-foreground sm:block">AI-Powered Outfit Color Matcher</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+
+          {/* Controls */}
+          <div className="flex items-center gap-2 sm:gap-3">
             <GenderSelector value={gender} onChange={handleGenderChange} />
+            <ThemeToggle />
             <UserMenu />
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="mx-auto max-w-4xl space-y-8 px-6 py-10">
+      <main className="mx-auto max-w-4xl space-y-6 px-4 py-6 sm:space-y-8 sm:px-6 sm:py-10">
         {/* Upload Section */}
         <section>
           <ImageDropZone onImageLoad={handleImageLoad} />
@@ -138,8 +141,8 @@ export default function Index() {
         {/* Color Suggestions */}
         {suggestions.length > 0 && !isAiLoading && (
           <section className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
-            <div className="mb-4 flex items-center gap-2">
-              <h2 className="font-sans text-lg font-bold text-foreground">
+            <div className="mb-4 flex flex-wrap items-center gap-2">
+              <h2 className="font-sans text-base font-bold text-foreground sm:text-lg">
                 ✨ Suggested Color Combinations
               </h2>
               {usedAi ? (
@@ -152,7 +155,7 @@ export default function Index() {
                 </span>
               )}
             </div>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {suggestions.map((s, i) => (
                 <ColorSuggestionCard
                   key={`${s.colorName}-${s.itemType}-${i}`}
@@ -178,8 +181,8 @@ export default function Index() {
         {/* Save Prompt for non-authenticated users */}
         {selectedSuggestion && !user && (
           <section className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
-              <Lock className="h-5 w-5 text-primary" />
+            <div className="flex flex-col gap-3 rounded-xl border border-primary/20 bg-primary/5 p-4 sm:flex-row sm:items-center">
+              <Lock className="h-5 w-5 shrink-0 text-primary" />
               <div className="flex-1">
                 <p className="text-sm font-medium text-foreground">Save this outfit combo?</p>
                 <p className="text-xs text-muted-foreground">Create a free account to save and revisit your matches</p>
@@ -195,7 +198,7 @@ export default function Index() {
         )}
 
         {/* Footer */}
-        <footer className="pb-8 pt-4 text-center text-sm text-muted-foreground">
+        <footer className="pb-8 pt-4 text-center text-xs text-muted-foreground sm:text-sm">
           {isGeminiConfigured()
             ? "Powered by Google Gemini AI • Drop an image to get smart outfit suggestions"
             : "Drop an image of your clothing to get personalized color match suggestions"
