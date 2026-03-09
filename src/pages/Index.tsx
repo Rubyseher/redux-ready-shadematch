@@ -41,7 +41,7 @@ export default function Index() {
       setIsAiLoading(true);
       try {
         const aiSuggestions = await getAIColorSuggestions(type, colorName, g);
-        if (aiSuggestions) { setUsedAi(true); return aiSuggestions; }
+        if (aiSuggestions) { setUsedAi(true); toast.success("AI-powered suggestions ready!", { duration: 2000 }); return aiSuggestions; }
       } catch {
         console.error("AI suggestion failed, using fallback");
       } finally {
