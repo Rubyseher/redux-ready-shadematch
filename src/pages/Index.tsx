@@ -64,7 +64,10 @@ export default function Index() {
               <p className="text-xs text-muted-foreground">AI-Powered Outfit Color Matcher</p>
             </div>
           </div>
-          <GenderSelector value={gender} onChange={handleGenderChange} />
+          <div className="flex items-center gap-3">
+            <GenderSelector value={gender} onChange={handleGenderChange} />
+            <UserMenu />
+          </div>
         </div>
       </header>
 
