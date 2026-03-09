@@ -15,6 +15,7 @@ import {
   type ColorSuggestion,
 } from "@/lib/colorAnalysis";
 import { getAIColorSuggestions, isGeminiConfigured } from "@/lib/geminiService";
+import { APP_NAME, APP_TAGLINE, APP_DESCRIPTION, APP_EMAIL, APP_GITHUB } from "@/lib/config";
 import { Sparkles, Lock, Brain, Cpu, Github, Mail, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -96,8 +97,8 @@ export default function Index() {
               <Sparkles className="h-5 w-5 text-primary sm:h-6 sm:w-6" />
             </div>
             <div>
-              <h1 className="text-lg font-bold tracking-tight text-foreground sm:text-xl">ShadeMatch</h1>
-              <p className="hidden text-xs text-muted-foreground sm:block">AI-Powered Outfit Color Matcher</p>
+              <h1 className="text-lg font-bold tracking-tight text-foreground sm:text-xl">{APP_NAME}</h1>
+              <p className="hidden text-xs text-muted-foreground sm:block">{APP_TAGLINE}</p>
             </div>
           </div>
 
@@ -209,10 +210,10 @@ export default function Index() {
                 <div className="rounded-lg bg-primary/10 p-1.5">
                   <Sparkles className="h-4 w-4 text-primary" />
                 </div>
-                <span className="text-sm font-bold text-foreground">ShadeMatch</span>
+                <span className="text-sm font-bold text-foreground">{APP_NAME}</span>
               </div>
               <p className="text-xs leading-relaxed text-muted-foreground">
-                AI-powered outfit color matching. Upload your clothing and get instant styling suggestions.
+                {APP_DESCRIPTION}
               </p>
             </div>
 
@@ -221,7 +222,7 @@ export default function Index() {
               <h4 className="text-xs font-semibold uppercase tracking-wider text-foreground">Resources</h4>
               <ul className="space-y-2 text-xs text-muted-foreground">
                 <li>
-                  <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground">
+                  <a href={APP_GITHUB} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground">
                     <Github className="h-3.5 w-3.5" /> GitHub Repository
                   </a>
                 </li>
@@ -248,13 +249,13 @@ export default function Index() {
           {/* Bottom bar */}
           <div className="mt-8 flex flex-col items-center gap-3 border-t border-border/50 pt-6 sm:flex-row sm:justify-between">
             <p className="text-xs text-muted-foreground">
-              © {new Date().getFullYear()} ShadeMatch. All rights reserved.
+              © {new Date().getFullYear()} {APP_NAME}. All rights reserved.
             </p>
             <div className="flex items-center gap-4">
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground transition-colors hover:text-foreground">
+              <a href={APP_GITHUB} target="_blank" rel="noopener noreferrer" className="text-muted-foreground transition-colors hover:text-foreground">
                 <Github className="h-4 w-4" />
               </a>
-              <a href="mailto:hello@shadematch.app" className="text-muted-foreground transition-colors hover:text-foreground">
+              <a href={`mailto:${APP_EMAIL}`} className="text-muted-foreground transition-colors hover:text-foreground">
                 <Mail className="h-4 w-4" />
               </a>
               <a href="#" className="text-muted-foreground transition-colors hover:text-foreground">
