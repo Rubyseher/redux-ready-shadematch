@@ -92,7 +92,7 @@ export default function Index() {
         {/* Color Suggestions */}
         {suggestions.length > 0 && (
           <section className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
-            <h2 className="mb-4 text-lg font-bold text-foreground">
+            <h2 className="font-sans mb-4 text-lg font-bold text-foreground">
               ✨ Suggested Color Combinations
             </h2>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

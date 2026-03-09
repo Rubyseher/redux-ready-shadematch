@@ -18,7 +18,7 @@ export default function ShoppingLinks({ suggestion, gender }: ShoppingLinksProps
           style={{ backgroundColor: suggestion.colorHex }}
         />
         <div>
-          <h3 className="font-semibold text-foreground">
+          <h3 className="font-sans font-semibold text-foreground">
             Shop {suggestion.colorName} {suggestion.itemType}
           </h3>
           <p className="text-sm text-muted-foreground">
