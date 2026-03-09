@@ -62,7 +62,6 @@ export default function Index() {
       setSelectedSuggestion(null);
       const combos = await fetchAISuggestions(type, color.name, gender);
       setSuggestions(combos);
-      if (isGeminiConfigured()) toast.success("AI-powered suggestions ready!", { duration: 2000 });
     },
     [gender, fetchAISuggestions]
   );
