@@ -4,6 +4,8 @@ import GenderSelector from "@/components/GenderSelector";
 import DetectionResult from "@/components/DetectionResult";
 import ColorSuggestionCard from "@/components/ColorSuggestionCard";
 import ShoppingLinks from "@/components/ShoppingLinks";
+import UserMenu from "@/components/UserMenu";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   extractDominantColor,
   detectClothType,
@@ -11,9 +13,12 @@ import {
   type ClothType,
   type ColorSuggestion,
 } from "@/lib/colorAnalysis";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Lock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Index() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [gender, setGender] = useState<"men" | "women">("men");
   const [clothType, setClothType] = useState<ClothType | null>(null);
   const [detectedColor, setDetectedColor] = useState<{ name: string; hex: string } | null>(null);
@@ -59,7 +64,10 @@ export default function Index() {
               <p className="text-xs text-muted-foreground">AI-Powered Outfit Color Matcher</p>
             </div>
           </div>
-          <GenderSelector value={gender} onChange={handleGenderChange} />
+          <div className="flex items-center gap-3">
+            <GenderSelector value={gender} onChange={handleGenderChange} />
+            <UserMenu />
+          </div>
         </div>
       </header>
 
@@ -107,6 +115,25 @@ export default function Index() {
         {selectedSuggestion && (
           <section className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             <ShoppingLinks suggestion={selectedSuggestion} gender={gender} />
+          </section>
+        )}
+
+        {/* Save Prompt for non-authenticated users */}
+        {selectedSuggestion && !user && (
+          <section className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
+              <Lock className="h-5 w-5 text-primary" />
+              <div className="flex-1">
+                <p className="text-sm font-medium text-foreground">Save this outfit combo?</p>
+                <p className="text-xs text-muted-foreground">Create a free account to save and revisit your matches</p>
+              </div>
+              <button
+                onClick={() => navigate("/auth")}
+                className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+              >
+                Sign Up Free
+              </button>
+            </div>
           </section>
         )}
 
