@@ -15,6 +15,7 @@ import {
   type ColorSuggestion,
 } from "@/lib/colorAnalysis";
 import { getAIColorSuggestions, isGeminiConfigured } from "@/lib/geminiService";
+import { APP_NAME, APP_TAGLINE, APP_DESCRIPTION, APP_EMAIL, APP_GITHUB } from "@/lib/config";
 import { Sparkles, Lock, Brain, Cpu, Github, Mail, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
