@@ -222,7 +222,7 @@ export default function Index() {
               <h4 className="text-xs font-semibold uppercase tracking-wider text-foreground">Resources</h4>
               <ul className="space-y-2 text-xs text-muted-foreground">
                 <li>
-                  <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground">
+                  <a href={APP_GITHUB} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground">
                     <Github className="h-3.5 w-3.5" /> GitHub Repository
                   </a>
                 </li>
