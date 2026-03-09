@@ -97,8 +97,8 @@ export default function Index() {
               <Sparkles className="h-5 w-5 text-primary sm:h-6 sm:w-6" />
             </div>
             <div>
-              <h1 className="text-lg font-bold tracking-tight text-foreground sm:text-xl">ShadeMatch</h1>
-              <p className="hidden text-xs text-muted-foreground sm:block">AI-Powered Outfit Color Matcher</p>
+              <h1 className="text-lg font-bold tracking-tight text-foreground sm:text-xl">{APP_NAME}</h1>
+              <p className="hidden text-xs text-muted-foreground sm:block">{APP_TAGLINE}</p>
             </div>
           </div>
 
