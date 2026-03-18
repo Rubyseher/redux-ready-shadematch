@@ -1,3 +1,11 @@
+
+<img width="1470" height="840" alt="Screenshot 2026-03-18 at 10 03 59 PM" src="https://github.com/user-attachments/assets/944b7f22-fa36-4da2-9dc5-665200998d7e" />
+<img width="1470" height="838" alt="Screenshot 2026-03-18 at 10 04 21 PM" src="https://github.com/user-attachments/assets/46c219ad-111f-4df9-8627-a4a706529d46" />
+<img width="335" height="725" alt="Screenshot 2026-03-18 at 10 05 13 PM" src="https://github.com/user-attachments/assets/6d066e11-c885-4f49-a565-ab26ed2bb295" />
+<img width="335" height="721" alt="Screenshot 2026-03-18 at 10 05 29 PM" src="https://github.com/user-attachments/assets/79d8affb-1f95-4416-8b92-4075d885c4d6" />
+
+
+
 # Welcome to your Lovable project
 
 ## Project info
