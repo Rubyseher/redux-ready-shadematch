@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="ShadeMatch logo">
+  <defs>
+    <linearGradient id="g" x1="12" y1="8" x2="116" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6C3CE0" />
+      <stop offset="1" stop-color="#4DD2B0" />
+    </linearGradient>
+    <linearGradient id="glow" x1="24" y1="20" x2="104" y2="108" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.18" />
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="28" fill="url(#g)" />
+  <rect x="12" y="12" width="104" height="104" rx="24" fill="url(#glow)" />
+  <g fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M44 82c6-10 15-16 26-16 6.5 0 12 2.3 16 6" />
+    <path d="M36 54c6-10 15-16 26-16 12 0 21 7 26 18" />
+  </g>
+  <text x="64" y="76" fill="#FFFFFF" font-family="'Inter', 'Helvetica Neue', Arial, sans-serif" font-size="32" font-weight="700" text-anchor="middle" dominant-baseline="middle">SM</text>
+</svg>
