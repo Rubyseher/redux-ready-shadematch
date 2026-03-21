@@ -18,6 +18,8 @@ export default defineConfig(({ mode }) => ({
     // mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
+      filename: "sw-20250321.js",
+      manifestFilename: "manifest-20250321.webmanifest",
       includeAssets: [
         "favicon-20250321.ico",
         "favicon-20250321.svg",
@@ -25,6 +27,8 @@ export default defineConfig(({ mode }) => ({
         "pwa-512x512-20250321.png",
       ],
       workbox: {
+        cacheId: "shadematch-20250321",
+        cleanupOutdatedCaches: true,
         navigateFallbackDenylist: [/^\/~oauth/],
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
       },
