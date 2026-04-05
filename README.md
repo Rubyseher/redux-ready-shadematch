@@ -1,7 +1,8 @@
 live demo on: https://redux-ready-shadematch.onrender.com
 
 
-<img width="1470" height="840" alt="Screenshot 2026-03-18 at 10 03 59 PM" src="https://github.com/user-attachments/assets/944b7f22-fa36-4da2-9dc5-665200998d7e" />
+<img width="1470" height="845" alt="Screenshot 2026-04-05 at 10 53 52 AM" src="https://github.com/user-attachments/assets/b3e54244-625e-487f-9871-b4caa25edcd5" />
+
 <img width="1470" height="838" alt="Screenshot 2026-03-18 at 10 04 21 PM" src="https://github.com/user-attachments/assets/46c219ad-111f-4df9-8627-a4a706529d46" />
 
 <img width="1470" height="837" alt="Screenshot 2026-03-18 at 10 06 36 PM" src="https://github.com/user-attachments/assets/c92c76c7-3946-4f7c-b80b-ddff56d7b9e0" />
